@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="מאגר סריקות של מבחנים עבור סטודנטים בטכניון | A repository of exam scans for students at the Technion">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.0.0/css/bootstrap.min.css">
+    <style>
+        /* Absolute Center CSS Overlay Spinner: https://codepen.io/MattIn4D/pen/LiKFC */
+
+        /* Absolute Center Spinner */
+        .loading {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            height: 2em;
+            width: 2em;
+            overflow: show;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        /* Transparent Overlay */
+        .loading:before {
+            content: '';
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.3);
+        }
+
+        /* :not(:required) hides these rules from IE9 and below */
+        .loading:not(:required) {
+            /* hide "loading..." text */
+            font: 0/0 a;
+            color: transparent;
+            text-shadow: none;
+            background-color: transparent;
+            border: 0;
+        }
+
+        .loading:not(:required):after {
+            content: '';
+            display: block;
+            font-size: 10px;
+            width: 1em;
+            height: 1em;
+            margin-top: -0.5em;
+            -webkit-animation: spinner 1500ms infinite linear;
+            -moz-animation: spinner 1500ms infinite linear;
+            -ms-animation: spinner 1500ms infinite linear;
+            -o-animation: spinner 1500ms infinite linear;
+            animation: spinner 1500ms infinite linear;
+            border-radius: 0.5em;
+            -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+            box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+        }
+
+        /* Animation */
+
+        @-webkit-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @-moz-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @-o-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="loading" id="upload-loader">Loading&#8230;</div>
+
+    <div class="row py-2">
+        <div class="col-md-12">
+            <form id="new-scan-form" class="needs-validation" novalidate>
+                <div class="form-row">
+                    <div class="form-group col-sm-6">
+                        <label for="detail-course-id">מספר קורס</label>
+                        <input type="text" pattern="0*[1-9][0-9]{0,5}" class="form-control" id="detail-course-id" name="detail-course-id" required>
+                        <div class="invalid-feedback">
+                            יש להכניס מספר קורס חוקי
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="detail-grade">ציון</label>
+                        <input type="text" pattern="0*[1-9][0-9]{0,2}" class="form-control" id="detail-grade" name="detail-grade" required>
+                        <div class="invalid-feedback">
+                            יש להכניס ציון חוקי
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-6">
+                        <label for="detail-semester">סמסטר</label>
+                        <select class="form-control" id="detail-semester" name="detail-semester" required>
+                        </select>
+                        <div class="invalid-feedback">
+                            יש לבחור סמסטר
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="detail-term">מועד</label>
+                        <select class="form-control" id="detail-term" name="detail-term" required>
+                            <option value="">לחצו לבחירת מועד...</option>
+                            <option>מועד א'</option>
+                            <option>מועד ב'</option>
+                            <option>מועד ג'</option>
+                            <option>בוחן אמצע</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            יש לבחור מועד
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-6">
+                        <label for="detail-lecturer">מרצה אחראי</label>
+                        <input type="text" class="form-control" id="detail-lecturer" name="detail-lecturer">
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="detail-ta">מתרגל אחראי</label>
+                        <input type="text" class="form-control" id="detail-ta" name="detail-ta">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-6">
+                        <label for="scan-file">קובץ הסריקה</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="scan-file" name="scan-file" required>
+                            <label class="custom-file-label" for="scan-file">בחרו את קובץ הסריקה</label>
+                            <div class="invalid-feedback">
+                                יש לבחור את קובץ הסריקה
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label for="detail-comments">הערות <span class="text-muted">(אופציונלי)</span></label>
+                        <input type="text" class="form-control" id="detail-comments" name="detail-comments">
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" id="submit-button" type="submit">שלח סריקה</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.rtlcss.com/bootstrap/v4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs4/dt-1.10.16/datatables.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-firestore.js"></script>
+<script>
+    (function () {
+        'use strict';
+
+        var dataFromServerTemplate = <?!= JSON.stringify(dataFromServerTemplate) ?>;
+
+        if (dataFromServerTemplate['course']) {
+            $('#detail-course-id').val(dataFromServerTemplate['course']);
+        }
+
+        var selectSemester = $('#detail-semester');
+        for (var year = 2000; year <= (new Date()).getFullYear(); year++) {
+            for (var season = 1; season <= 3; season++) {
+                var semester = year.toString() + '0' + season.toString();
+                selectSemester.prepend($('<option>', {
+                    value: semester,
+                    text: semesterFriendlyName(semester)
+                }));
+            }
+        }
+        selectSemester.prepend($('<option value="">לחצו לבחירת סמסטר...</option>')).val('');
+
+        // https://github.com/twbs/bootstrap/issues/23994#issuecomment-331979297
+        $('.custom-file-input').on('change', function() {
+            var fileName = $(this).val().split('\\').pop();
+            if (fileName === '') {
+                fileName = '(no file was selected)';
+            }
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+
+        $('#new-scan-form').submit(function(e) {
+            e.preventDefault(); // prevent form from submitting
+            //var data = $("#login_form :input").serializeArray();
+            //console.log(data); // use the console for debugging, F12 in Chrome, not alerts
+
+            if (this.checkValidity() === false) {
+                this.classList.add('was-validated');
+                return;
+            }
+            this.classList.remove('was-validated');
+
+            google.script.run
+                .withFailureHandler(fileUploadedFailure)
+                .withSuccessHandler(fileUploaded)
+                .uploadFilesFrame(this);
+
+            $('#upload-loader').show();
+            $('#submit-button').text('שולח סריקה...');
+        });
+
+        firebaseInit();
+        var firestoreDb = firestoreDbInit();
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        function firebaseInit() {
+            var config = {
+                apiKey: 'AIzaSyDoSZx7JsikUq1cGgvFkkNq_NRjAHhHIFQ',
+                authDomain: 'scans-d504c.firebaseapp.com',
+                databaseURL: 'https://scans-d504c.firebaseio.com',
+                projectId: 'scans-d504c',
+                storageBucket: 'scans-d504c.appspot.com',
+                messagingSenderId: '753897952925'
+            };
+            firebase.initializeApp(config);
+        }
+
+        function firestoreDbInit() {
+            var db = firebase.firestore();
+            db.settings({timestampsInSnapshots: true}); // silence a warning
+            return db;
+        }
+
+        function fileUploadedFailure(error) {
+            onFileUploadError('Failed: ' + error.message);
+        }
+
+        function fileUploaded(status) {
+            try {
+                var obj = JSON.parse(status);
+                if (obj.status === 'ok') {
+                    var update = {};
+                    update['scans.' + obj.fileId] = {
+                        course: $('#detail-course-id').val(),
+                        grade: $('#detail-grade').val(),
+                        semester: $('#detail-semester').val(),
+                        term: $('#detail-term').val(),
+                        lecturer: $('#detail-lecturer').val(),
+                        ta: $('#detail-ta').val()
+                    };
+                    var comments = $('#detail-comments').val();
+                    update['comments.' + obj.fileId] = comments ? [comments] : [];
+
+                    firestoreDb.collection('scans').doc('allScans')
+                        .update(update)
+                        .then(function () {
+                            //console.log("Document successfully updated!");
+                            $("#new-scan-form :input").prop('disabled', true);
+                            $('#upload-loader').hide();
+                            $('#submit-button').html('הסריקה התקבלה בהצלחה!');
+                        })
+                        .catch(function (error) {
+                            onFileUploadError('Error updating document: ' + error);
+                        });
+                } else {
+                    onFileUploadError('Failed: ' + obj.data);
+                }
+            } catch (ex) {
+                onFileUploadError('Failed: ' + ex.toString());
+            }
+        }
+
+        function onFileUploadError(msg) {
+            alert(msg);
+            $('#upload-loader').hide();
+            $('#submit-button').text('שלח סריקה');
+        }
+
+        function semesterFriendlyName(semester) {
+            var year = parseInt(semester.slice(0, 4), 10);
+            var semesterCode = semester.slice(4);
+
+            switch (semesterCode) {
+                case '01':
+                    return 'חורף ' + year + '-' + (year + 1);
+
+                case '02':
+                    return 'אביב ' + (year + 1);
+
+                case '03':
+                    return 'קיץ ' + (year + 1);
+
+                default:
+                    return semester;
+            }
+        }
+    })();
+</script>
+</body>
+</html>

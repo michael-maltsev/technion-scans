@@ -6,6 +6,10 @@ function doGet(e) {
   if (e.parameter['action'] === 'upload') {
     output = HtmlService.createHtmlOutputFromFile('upload_scan');
     output.setTitle('Upload a New Scan - Technion Scans');
+  } else if (e.parameter['action'] === 'upload_frame') {
+    template = HtmlService.createTemplateFromFile('upload_scan_frame');
+    template.dataFromServerTemplate = {"course": e.parameter['course']};
+    output = template.evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   } else if (e.parameter['action'] === 'update') {
     template = HtmlService.createTemplateFromFile('update_scan');
     template.dataFromServerTemplate = {"course": e.parameter['course'], "scan": e.parameter['scan']};
@@ -98,6 +102,55 @@ function uploadFiles(form) {
   }
 }
 
+function uploadFilesFrame(form) {
+  try {
+    if (!/^(0*[1-9][0-9]{0,5})$/.test(form['detail-course-id'])) {
+      return JSON.stringify({"status": 'error', "data": 'Invalid input'});
+    }
+    
+    var courseNumber = ('000000' + form['detail-course-id']).slice(-6);
+    var fileBlob = form['scan-file'];
+    var fileData = {
+      "course-number": courseNumber,
+      "grade": parseInt(form['detail-grade'], 10),
+      "semester": form['detail-semester'],
+      "term": form['detail-term'],
+      "lecturer": form['detail-lecturer'],
+      "ta": form['detail-ta'],
+      "comments": form['detail-comments'],
+      "original-name": fileBlob.getName()
+    };
+    
+    var rootFolder = DriveApp.getFoldersByName(rootFolderName);
+    if (rootFolder.hasNext()) {
+      rootFolder = rootFolder.next();
+    } else {
+      rootFolder = DriveApp.createFolder(rootFolderName);
+    }
+    
+    var courseFolder = rootFolder.getFoldersByName(courseNumber);
+    if (courseFolder.hasNext()) {
+      courseFolder = courseFolder.next();
+    } else {
+      courseFolder = rootFolder.createFolder(courseNumber);
+    }
+    
+    renameBlobOrFile(fileBlob, makeScanName(fileData));
+    var file = courseFolder.createFile(fileBlob);
+    file.setDescription(JSON.stringify(fileData));
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.COMMENT);
+    } catch (error) {
+      // Not supported, ignore.
+    }
+    //clearScansCache();
+    
+    return JSON.stringify({"status": 'ok', "fileId": file.getId()});
+  } catch (error) {
+    return JSON.stringify({"status": 'error', "data": error.toString()+','+e.lineNumber+','+e.stack});
+  }
+}
+
 function updateInfo(form) {
   try {
     if (!/^(0*[1-9][0-9]{0,5})$/.test(form['course-number'])) {
@@ -149,11 +202,51 @@ function renameBlobOrFile(blobOrFile, newName) {
 function makeScanName(fileData) {
   // 234322_2017_Spring_B_85.pdf
   var d = fileData;
-  return d['course-number']
-    +'_'+d['year']
-    +'_'+d['semester']
-    +'_'+d['type'].replace(/^Moed /, '').charAt(0)
-    +'_'+d['grade'];
+  
+  if (d['year'] && d['type']) {
+    return d['course-number']
+      +'_'+d['year']
+      +'_'+d['semester']
+      +'_'+d['type'].replace(/^Moed /, '').charAt(0)
+      +'_'+d['grade'];
+  } else {
+    var semester = d['semester'];
+    var year = parseInt(semester.slice(0, 4), 10);
+    var season = semester.slice(4);
+    switch (season) {
+      case '01':
+        season = 'Winter';
+        break;
+      case '02':
+        season = 'Spring';
+        break;
+      case '03':
+        season = 'Summer';
+        break;
+    }
+    
+    var type = d['term'];
+    switch (type) {
+      case 'מועד א\'':
+        type = 'A';
+        break;
+      case 'מועד ב\'':
+        type = 'B';
+        break;
+      case 'מועד ג\'':
+        type = 'C';
+        break;
+      case 'בוחן אמצע':
+        type = 'M';
+        break;
+    }
+    
+    return d['course-number']
+      +'_'+year
+      +'_'+season
+      +'_'+type
+      +'_'+d['grade'];
+  }
 }
 
 function loadScans() {
