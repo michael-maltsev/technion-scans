@@ -242,17 +242,6 @@
                         return invisibleSpan[0].outerHTML + ' ' + link[0].outerHTML;
                     }
                 }, {
-                    "targets": 2,
-                    "type": "numeric",
-                    "render": {
-                        _: function (oObj) {
-                            return oObj || '???';
-                        },
-                        sort: function (oObj) {
-                            return oObj || '999';
-                        }
-                    }
-                }, {
                     "targets": 3,
                     "render": {
                         _: function (oObj) {
@@ -260,16 +249,6 @@
                         },
                         sort: function (oObj) {
                             return oObj || '000000';
-                        }
-                    }
-                }, {
-                    "targets": 4,
-                    "render": {
-                        _: function (oObj) {
-                            return oObj || '???';
-                        },
-                        sort: function (oObj) {
-                            return oObj || '';
                         }
                     }
                 }, {
