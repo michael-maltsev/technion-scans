@@ -372,8 +372,12 @@
     })();
 
     function scanAddComment(element, scanId) {
-        // https://stackoverflow.com/a/30730405
-        var row = $('#scans-table').DataTable().row($(element).closest('tr'));
+        // https://stackoverflow.com/a/30730405, adapted to work correctly with the responsive plugin.
+        var trElement = $(element).closest('tr');
+        if (trElement.hasClass('child')) {
+            trElement = trElement.prev();
+        }
+        var row = $('#scans-table').DataTable().row(trElement);
 
         BootstrapDialog.show({
             title: 'הוסף הערה',
@@ -414,8 +418,12 @@
     }
 
     function scanUpdateDetails(element, scanId) {
-        // https://stackoverflow.com/a/30730405
-        var row = $('#scans-table').DataTable().row($(element).closest('tr'));
+        // https://stackoverflow.com/a/30730405, adapted to work correctly with the responsive plugin.
+        var trElement = $(element).closest('tr');
+        if (trElement.hasClass('child')) {
+            trElement = trElement.prev();
+        }
+        var row = $('#scans-table').DataTable().row(trElement);
 
         var message = $('#update-details-form')[0].outerHTML;
 
