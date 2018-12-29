@@ -206,9 +206,7 @@
             "stateSave": true,
             "fnStateLoadParams": function (oSettings, oData) {
                 delete oData.columns;
-                if (searchQuery) {
-                    oData.search.search = searchQuery;
-                }
+                oData.search.search = searchQuery || '';
             },
             "oSearch": {
                 sSearch: searchQuery || ''
