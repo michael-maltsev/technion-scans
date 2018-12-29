@@ -211,7 +211,7 @@ function makeScanName(fileData) {
       +'_'+d['grade'];
   } else {
     var semester = d['semester'];
-    var year = parseInt(semester.slice(0, 4), 10);
+    var year = parseInt(semester.slice(0, 4), 10) + 1;
     var season = semester.slice(4);
     switch (season) {
       case '01':
