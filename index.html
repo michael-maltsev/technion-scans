@@ -8,11 +8,11 @@
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap4-dialog/css/bootstrap-dialog.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.10.16/datatables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/r-2.2.2/datatables.min.css">
     <link rel="stylesheet" href="loader.css">
     <style>
         #scans-table-container {
-            display: none;
+            visibility: hidden;
         }
 
         /* DataTables RTL fixes */
@@ -157,7 +157,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://cdn.rtlcss.com/bootstrap/v4.0.0/js/bootstrap.min.js"></script>
 <script src="bootstrap4-dialog/js/bootstrap-dialog.min.js"></script>
-<script src="https://cdn.datatables.net/v/bs4/dt-1.10.16/datatables.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs4/dt-1.10.18/r-2.2.2/datatables.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-firestore.js"></script>
 <script>
@@ -203,6 +203,7 @@
         });
 
         $('#scans-table').DataTable({
+            "responsive": true,
             "stateSave": true,
             "fnStateLoadParams": function (oSettings, oData) {
                 delete oData.columns;
@@ -325,7 +326,7 @@
                         id
                     ]);
                 });
-                $('#scans-table-container').show();
+                $('#scans-table-container').css('visibility', 'visible');
                 $('#scans-table').DataTable().rows.add(rows).draw();
                 $('#page-loader').hide();
             })
