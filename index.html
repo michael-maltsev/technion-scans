@@ -263,7 +263,7 @@
                     "targets": 7,
                     "render": function (oObj) {
                         // Escape HTML while retaining line breaks.
-                        return $('<div>').text(oObj.replace(/<br>/g, '\n')).html().replace(/\n/g, '<br>');
+                        return $('<div>').text(oObj).html().replace(/\n/g, '<br>');
                     }
                 }, {
                     "targets": 8,
@@ -330,7 +330,7 @@
                         return;
                     }
 
-                    var commentsJoined = (comments[id] || []).join('<br>');
+                    var commentsJoined = (comments[id] || []).join('\n');
                     rows.push([
                         id,
                         d.course,
@@ -420,7 +420,7 @@
                                 if (row.data()[7]) {
                                     row.data()[7] += '<br>';
                                 }
-                                row.data()[7] += text;
+                                row.data()[7] += $('<div>').text(text).html().replace(/\n/g, '<br>');
                                 row.invalidate();
                             })
                             .catch(function (error) {
