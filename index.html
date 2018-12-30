@@ -234,7 +234,7 @@
                             return $('<a>').prop('href', '?course=' + oObj).text(oObj)[0].outerHTML;
                         }
 
-                        var invisibleSpan = $('<span style="display: none;">').text(name);
+                        var invisibleSpan = $('<span style="display: none;"></span>').text(name);
                         var link = $('<a data-toggle="tooltip">')
                             .prop('title', name)
                             .prop('href', '?course=' + oObj)
