@@ -214,12 +214,19 @@
             },
             "columnDefs": [
                 {
+                    "targets": [2, 4, 5, 6],
+                    "render": $.fn.dataTable.render.text()
+                }, {
                     "targets": 0,
                     "className": "text-center",
                     "width": "1%",
                     "searchable": false,
                     "sortable": false,
                     "render": function (oObj) {
+                        if (!/^[a-zA-Z0-9-_]+$/.test(oObj)) {
+                            return '???';
+                        }
+
                         var url = 'https://drive.google.com/file/d/' + oObj + '/view';
                         return $('<a target="_blank" class="btn btn-secondary btn-sm">הצג</a>').prop('href', url)[0].outerHTML;
                     }
@@ -246,11 +253,17 @@
                     "targets": 3,
                     "render": {
                         _: function (oObj) {
-                            return oObj ? semesterFriendlyName(oObj) : '???';
+                            return (oObj && /^\d{6}$/.test(oObj)) ? semesterFriendlyName(oObj) : '???';
                         },
                         sort: function (oObj) {
-                            return oObj || '000000';
+                            return oObj;
                         }
+                    }
+                }, {
+                    "targets": 7,
+                    "render": function (oObj) {
+                        // Escape HTML while retaining line breaks.
+                        return $('<div>').text(oObj.replace(/<br>/g, '\n')).html().replace(/\n/g, '<br>');
                     }
                 }, {
                     "targets": 8,
@@ -259,6 +272,10 @@
                     "searchable": false,
                     "sortable": false,
                     "render": function (oObj) {
+                        if (!/^[a-zA-Z0-9-_]+$/.test(oObj)) {
+                            return '???';
+                        }
+
                         return '<button class="btn btn-secondary dropdown-toggle" id="actionsMenu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
                             + '⚙</button>'
                             + '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'
