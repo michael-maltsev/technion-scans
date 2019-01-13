@@ -424,9 +424,9 @@
                             .then(function () {
                                 //console.log("Document successfully updated!");
                                 if (row.data()[7]) {
-                                    row.data()[7] += '<br>';
+                                    row.data()[7] += '\n';
                                 }
-                                row.data()[7] += $('<div>').text(text).html().replace(/\n/g, '<br>');
+                                row.data()[7] += text;
                                 row.invalidate();
                             })
                             .catch(function (error) {
