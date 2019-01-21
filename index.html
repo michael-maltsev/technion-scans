@@ -486,25 +486,35 @@
                 action: function (dialog) {
                     var body = dialog.getModalBody();
 
-                    firestoreDb.collection('updateRequests').doc()
-                        .set({
-                            id: scanId,
-                            course: body.find('#detail-course-id').val(),
-                            grade: body.find('#detail-grade').val(),
-                            semester: body.find('#detail-semester').val(),
-                            term: body.find('#detail-term').val(),
-                            lecturer: body.find('#detail-lecturer').val(),
-                            ta: body.find('#detail-ta').val()
-                        })
+                    var data = {
+                        course: body.find('#detail-course-id').val(),
+                        grade: parseInt(body.find('#detail-grade').val(), 10),
+                        semester: body.find('#detail-semester').val(),
+                        term: body.find('#detail-term').val(),
+                        lecturer: body.find('#detail-lecturer').val(),
+                        ta: body.find('#detail-ta').val()
+                    };
+
+                    var update = {};
+                    update['scans.' + scanId] = data;
+
+                    firestoreDb.collection('scans').doc('allScans')
+                        .update(update)
                         .then(function () {
                             //console.log("Document successfully updated!");
-                            dialog.setMessage('תודה, הבקשה נקלטה בהצלחה');
+                            row.data()[1] = data.course;
+                            row.data()[2] = data.grade;
+                            row.data()[3] = data.semester;
+                            row.data()[4] = data.term;
+                            row.data()[5] = data.lecturer;
+                            row.data()[6] = data.ta;
+                            row.invalidate();
                         })
                         .catch(function (error) {
                             alert('Error writing document: ' + error);
                         });
 
-                    dialog.enableButtons(false);
+                    dialog.close();
                 }
             }]
         });
