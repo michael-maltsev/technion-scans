@@ -147,7 +147,7 @@
                     </div>
                     <div class="form-group col-sm-6">
                         <label for="detail-grade">ציון</label>
-                        <input type="text" pattern="0*[1-9][0-9]{0,2}" class="form-control" id="detail-grade" name="detail-grade" required>
+                        <input type="text" pattern="0*[1-9][0-9]{0,2}(\.\d+)?" class="form-control" id="detail-grade" name="detail-grade" required>
                         <div class="invalid-feedback">
                             יש להכניס ציון חוקי
                         </div>
@@ -238,15 +238,15 @@
         selectSemester.prepend($('<option value="">לחצו לבחירת סמסטר...</option>')).val('');
 
         // https://github.com/twbs/bootstrap/issues/23994#issuecomment-331979297
-        $('.custom-file-input').on('change', function() {
+        $('.custom-file-input').on('change', function () {
             var fileName = $(this).val().split('\\').pop();
             if (fileName === '') {
-                fileName = '(no file was selected)';
+                fileName = '(לא נבחר קובץ)';
             }
             $(this).next('.custom-file-label').addClass("selected").html(fileName);
         });
 
-        $('#new-scan-form').submit(function(e) {
+        $('#new-scan-form').submit(function (e) {
             e.preventDefault(); // prevent form from submitting
             //var data = $("#login_form :input").serializeArray();
             //console.log(data); // use the console for debugging, F12 in Chrome, not alerts
@@ -300,7 +300,7 @@
                     var update = {};
                     update['scans.' + obj.fileId] = {
                         course: $('#detail-course-id').val(),
-                        grade: $('#detail-grade').val(),
+                        grade: parseFloat($('#detail-grade').val()),
                         semester: $('#detail-semester').val(),
                         term: $('#detail-term').val(),
                         lecturer: $('#detail-lecturer').val(),
