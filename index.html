@@ -428,7 +428,7 @@
                     cssClass: 'btn-primary',
                     hotkey: 13, // Enter.
                     action: function (dialog) {
-                        var text = dialog.getModalBody().find('input[type="text"]').val();
+                        var text = dialog.getModalBody().find('input[type="text"]').val().trim().replace(/\s+/g, ' ');
                         if (text) {
                             var update = {};
                             update['comments.' + scanId] = firebase.firestore.FieldValue.arrayUnion(text);
@@ -508,12 +508,12 @@
                         form.classList.remove('was-validated');
 
                         var data = {
-                            course: body.find('#detail-course-id').val(),
+                            course: ('000000' + body.find('#detail-course-id').val()).slice(-6),
                             grade: parseFloat(body.find('#detail-grade').val()),
                             semester: body.find('#detail-semester').val(),
                             term: body.find('#detail-term').val(),
-                            lecturer: body.find('#detail-lecturer').val(),
-                            ta: body.find('#detail-ta').val()
+                            lecturer: body.find('#detail-lecturer').val().trim().replace(/\s+/g, ' '),
+                            ta: body.find('#detail-ta').val().trim().replace(/\s+/g, ' ')
                         };
 
                         var update = {};

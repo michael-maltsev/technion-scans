@@ -299,14 +299,14 @@
                 if (obj.status === 'ok') {
                     var update = {};
                     update['scans.' + obj.fileId] = {
-                        course: $('#detail-course-id').val(),
+                        course: ('000000' + $('#detail-course-id').val()).slice(-6),
                         grade: parseFloat($('#detail-grade').val()),
                         semester: $('#detail-semester').val(),
                         term: $('#detail-term').val(),
-                        lecturer: $('#detail-lecturer').val(),
-                        ta: $('#detail-ta').val()
+                        lecturer: $('#detail-lecturer').val().trim().replace(/\s+/g, ' '),
+                        ta: $('#detail-ta').val().trim().replace(/\s+/g, ' ')
                     };
-                    var comments = $('#detail-comments').val();
+                    var comments = $('#detail-comments').val().trim().replace(/\s+/g, ' ');
                     update['comments.' + obj.fileId] = comments ? [comments] : [];
 
                     firestoreDb.collection('scans').doc('allScans')
