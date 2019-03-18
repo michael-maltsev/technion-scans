@@ -62,7 +62,7 @@
         <a href="."><img class="d-block mx-auto mb-4" alt="" width="72" height="72" src="scanner_technion.png"></a>
         <h2 id="main-title">הטכניון - מאגר סריקות</h2>
         <p class="lead">לשליחת סריקה חדשה <a href="#" id="upload-new-scan-link">לחצו כאן</a><br>
-        ניתן לגשת ל-Google Drive <a href="https://drive.google.com/open?id=1Dr3e27tv-vRwf0UvzQVcT0soRn0SrsNZ" target="_blank">כאן</a></p>
+        ניתן לגשת ל-Google Drive <a href="https://drive.google.com/open?id=1Dr3e27tv-vRwf0UvzQVcT0soRn0SrsNZ" target="_blank" rel="noopener">כאן</a></p>
     </div>
 
     <div class="row">
@@ -159,7 +159,7 @@
     </div>
 
     <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">תוכנת על ידי <a href="https://github.com/michael-maltsev" target="_blank">מיכאל מלצב</a>.</p>
+        <p class="mb-1">תוכנת על ידי <a href="https://github.com/michael-maltsev" target="_blank" rel="noopener">מיכאל מלצב</a>.</p>
     </footer>
 </div>
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -249,7 +249,7 @@
                         }
 
                         var url = 'https://drive.google.com/file/d/' + oObj + '/view';
-                        return $('<a target="_blank" class="btn btn-secondary btn-sm">הצג</a>').prop('href', url)[0].outerHTML;
+                        return $('<a target="_blank" rel="noopener" class="btn btn-secondary btn-sm">הצג</a>').prop('href', url)[0].outerHTML;
                     }
                 }, {
                     "targets": 1,
