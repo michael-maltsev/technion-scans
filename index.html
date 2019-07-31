@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="loader.css">
     <style>
         #scans-table-container {
-            visibility: hidden;
+            display: none;
         }
 
         th .scans-column-header-with-yadcf {
@@ -447,8 +447,9 @@
                         id
                     ]);
                 });
-                $('#scans-table-container').css('visibility', 'visible');
+                $('#scans-table-container').show();
                 $('#scans-table').DataTable().rows.add(rows).draw();
+                scansTable.responsive.recalc();
                 $('#page-loader').hide();
             })
             .catch(function (error) {
