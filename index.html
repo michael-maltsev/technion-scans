@@ -347,8 +347,26 @@
                 }, {
                     "targets": 7,
                     "render": function (oObj) {
+                        var textLimit = 60;
+                        var textMinTruncateLen = 10;
+
+                        if (oObj.length < textLimit + textMinTruncateLen) {
+                            // Escape HTML while retaining line breaks.
+                            return $('<div>').text(oObj).html().replace(/\n/g, '<br>');
+                        }
+
+                        var textShown = oObj.slice(0, textLimit);
+                        var textHidden = oObj.slice(textLimit);
+
                         // Escape HTML while retaining line breaks.
-                        return $('<div>').text(oObj).html().replace(/\n/g, '<br>');
+                        var textShownHtml = $('<div>').text(textShown).html().replace(/\n/g, '<br>');
+                        var textHiddenHtml = $('<div>').text(textHidden).html().replace(/\n/g, '<br>');
+
+                        var seeMoreLink = $('<a href="#">הצג הכל</a>')
+                            .attr('data-hidden-text', textHiddenHtml)
+                            .attr('onclick', '$(this).parent().html($(this).attr(\'data-hidden-text\')); return false;');
+                        var seeMoreSpan = $('<span>... </span>').append(seeMoreLink);
+                        return textShownHtml + seeMoreSpan[0].outerHTML;
                     }
                 }, {
                     "targets": 8,
