@@ -249,7 +249,8 @@
                         }
 
                         var url = 'https://drive.google.com/file/d/' + oObj + '/view';
-                        return $('<a target="_blank" rel="noopener" class="btn btn-secondary btn-sm">הצג</a>').prop('href', url)[0].outerHTML;
+                        return $('<a target="_blank" rel="noopener" class="btn btn-secondary btn-sm">הצג</a>')
+                            .prop('href', url).attr('onclick', 'arguments[0].stopPropagation();')[0].outerHTML;
                     }
                 }, {
                     "targets": 1,
