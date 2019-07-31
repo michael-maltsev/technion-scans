@@ -40,12 +40,16 @@
             margin-right: 0.5em;
         }
 
-        table.table-bordered.dataTable th, table.table-bordered.dataTable td {
+        table.table-bordered.dataTable th,
+        table.table-bordered.dataTable td {
             border-left-width: 1px;
             border-right-width: 0;
         }
 
-        table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable td:last-child, table.table-bordered.dataTable td:last-child {
+        table.table-bordered.dataTable th:last-child,
+        table.table-bordered.dataTable th:last-child,
+        table.table-bordered.dataTable td:last-child,
+        table.table-bordered.dataTable td:last-child {
             border-left-width: 0;
         }
 
@@ -107,7 +111,8 @@
             border-top-right-radius: 0;
             border-top-left-radius: 0.2rem;
             border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0.2rem; }
+            border-bottom-left-radius: 0.2rem;
+        }
         html[dir='rtl'] .select2-container--bootstrap4 .select2-selection__clear {
             padding-right: 0.3em;
             padding-left: 0;
@@ -175,7 +180,7 @@
                         יש להכניס מספר קורס חוקי
                     </div>
                 </div>
-                    <div class="form-group col-md-6">
+                <div class="form-group col-md-6">
                     <label for="detail-grade">ציון</label>
                     <input type="text" pattern="0*[1-9][0-9]{0,2}(\.\d+)?" class="form-control" id="detail-grade" required>
                     <div class="invalid-feedback">
@@ -428,17 +433,17 @@
             }
         };
         yadcf.init(scansTable, [
-            Object.assign({column_number : 1, filter_default_label: 'קורס'}, yadcfColumnOptions),
-            Object.assign({column_number : 3, filter_default_label: 'סמסטר'}, yadcfColumnOptions),
-            Object.assign({column_number : 4, filter_default_label: 'מועד'}, yadcfColumnOptions),
-            Object.assign({column_number : 5, filter_default_label: 'מרצה אחראי'}, yadcfColumnOptions),
-            Object.assign({column_number : 6, filter_default_label: 'מתרגל אחראי'}, yadcfColumnOptions),
+            Object.assign({column_number: 1, filter_default_label: 'קורס'}, yadcfColumnOptions),
+            Object.assign({column_number: 3, filter_default_label: 'סמסטר'}, yadcfColumnOptions),
+            Object.assign({column_number: 4, filter_default_label: 'מועד'}, yadcfColumnOptions),
+            Object.assign({column_number: 5, filter_default_label: 'מרצה אחראי'}, yadcfColumnOptions),
+            Object.assign({column_number: 6, filter_default_label: 'מתרגל אחראי'}, yadcfColumnOptions),
         ]);
 
         firebaseInit();
         var firestoreDb = firestoreDbInit();
 
-        var doc = firestoreDb.collection('scans').doc('allScans').get()
+        firestoreDb.collection('scans').doc('allScans').get()
             .then(function (doc) {
                 if (!doc.exists) {
                     return;
