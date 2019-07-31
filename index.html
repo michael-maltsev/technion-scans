@@ -15,10 +15,17 @@
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap4-dialog/css/bootstrap-dialog.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/r-2.2.2/datatables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css">
+    <link rel="stylesheet" href="select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="dataTables-yadcf/jquery.datatables.yadcf.css">
     <link rel="stylesheet" href="loader.css">
     <style>
         #scans-table-container {
             visibility: hidden;
+        }
+
+        th .scans-column-header-with-yadcf {
+            display: none;
         }
 
         /* DataTables RTL fixes */
@@ -53,6 +60,59 @@
         .bootstrap-dialog .bootstrap-dialog-footer-buttons .btn {
             margin-right: .5rem;
         }
+
+        /* select2 - make block and not inline-block */
+        .yadcf-filter-wrapper {
+            display: block;
+        }
+
+        /* select2 bootstrap4 improve width with bold text */
+        .yadcf-filter {
+            font-weight: bold;
+            padding-left: 14px;
+        }
+
+        /* select2 bootstrap4 - reduce height */
+        .select2-container--bootstrap4 .select2-selection--single {
+            height: 28px !important;
+        }
+        .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+            line-height: 28px;
+        }
+
+        /* select2 bootstrap4 theme RTL fixes: https://github.com/ttskch/select2-bootstrap4-theme/issues/21 */
+        html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
+            margin-left: auto;
+            margin-right: -4px;
+        }
+        html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
+            left: 3px;
+            right: auto;
+        }
+        html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+            padding-right: 0;
+            padding-left: 5px;
+            float: right;
+            margin-right: 0;
+            margin-left: 5px;
+        }
+        html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice__remove {
+            margin-left: 1px;
+            margin-right: 3px;
+            float: right;
+        }
+        html[dir='rtl'] .input-group-prepend ~ .select2-container--bootstrap4 .select2-selection {
+            border-top-right-radius: 0;
+            border-top-left-radius: 0.2rem;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0.2rem; }
+        html[dir='rtl'] .select2-container--bootstrap4 .select2-selection__clear {
+            padding-right: 0.3em;
+            padding-left: 0;
+            float: left;
+            margin-right: auto;
+            margin-left: 0.3em;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -73,12 +133,12 @@
                     <thead>
                     <tr>
                         <th>הסריקה</th>
-                        <th>קורס</th>
+                        <th><span class="scans-column-header-with-yadcf">קורס</span></th>
                         <th>ציון</th>
-                        <th>סמסטר</th>
-                        <th>מועד</th>
-                        <th>מרצה אחראי</th>
-                        <th>מתרגל אחראי</th>
+                        <th><span class="scans-column-header-with-yadcf">סמסטר</span></th>
+                        <th><span class="scans-column-header-with-yadcf">מועד</span></th>
+                        <th><span class="scans-column-header-with-yadcf">מרצה אחראי</span></th>
+                        <th><span class="scans-column-header-with-yadcf">מתרגל אחראי</span></th>
                         <th>הערות</th>
                         <th>פעולות</th>
                     </tr>
@@ -176,6 +236,9 @@
 <script src="https://cdn.rtlcss.com/bootstrap/v4.0.0/js/bootstrap.min.js"></script>
 <script src="bootstrap4-dialog/js/bootstrap-dialog.min.js"></script>
 <script src="https://cdn.datatables.net/v/bs4/dt-1.10.18/r-2.2.2/datatables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/i18n/he.js"></script>
+<script src="dataTables-yadcf/jquery.datatables.yadcf.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-firestore.js"></script>
 <script>
@@ -223,7 +286,7 @@
             return false;
         });
 
-        $('#scans-table').DataTable({
+        var scansTable = $('#scans-table').DataTable({
             "responsive": true,
             "stateSave": true,
             "fnStateLoadParams": function (oSettings, oData) {
@@ -263,13 +326,13 @@
                             return $('<a>').prop('href', '?course=' + oObj).text(oObj)[0].outerHTML;
                         }
 
-                        var invisibleSpan = $('<span style="display: none;"></span>').text(name);
+                        var invisibleSpan = $('<span style="display: none;"></span>').text(' - ' + name);
                         var link = $('<a data-toggle="tooltip">')
                             .prop('title', name)
                             .prop('href', '?course=' + oObj)
                             .text(oObj);
 
-                        return invisibleSpan[0].outerHTML + ' ' + link[0].outerHTML;
+                        return link[0].outerHTML + invisibleSpan[0].outerHTML;
                     }
                 }, {
                     "targets": 3,
@@ -316,7 +379,7 @@
                 "emptyTable": "לא נמצאו רשומות מתאימות",
                 "info": "_START_ עד _END_ מתוך _TOTAL_ רשומות",
                 "infoEmpty": "0 עד 0 מתוך 0 רשומות",
-                "infoFiltered": "(מסונן מסך _MAX_  רשומות)",
+                "infoFiltered": "(מסונן מסך _MAX_ רשומות)",
                 "infoPostFix": "",
                 "search": "חפש:",
                 "url": "",
@@ -332,6 +395,25 @@
             }
         });
         $('#scans-table').tooltip({selector: '[data-toggle=tooltip]'});
+
+        var yadcfColumnOptions = {
+            filter_reset_button_text: false,
+            filter_match_mode: 'exact',
+            column_data_type: 'rendered_html',
+            select_type: 'select2',
+            select_type_options: {
+                theme: 'bootstrap4',
+                language: 'he',
+                dropdownAutoWidth: true
+            }
+        };
+        yadcf.init(scansTable, [
+            Object.assign({column_number : 1, filter_default_label: 'קורס'}, yadcfColumnOptions),
+            Object.assign({column_number : 3, filter_default_label: 'סמסטר'}, yadcfColumnOptions),
+            Object.assign({column_number : 4, filter_default_label: 'מועד'}, yadcfColumnOptions),
+            Object.assign({column_number : 5, filter_default_label: 'מרצה אחראי'}, yadcfColumnOptions),
+            Object.assign({column_number : 6, filter_default_label: 'מתרגל אחראי'}, yadcfColumnOptions),
+        ]);
 
         firebaseInit();
         var firestoreDb = firestoreDbInit();
