@@ -439,6 +439,8 @@
             $.extend({column_number: 6, filter_default_label: 'מתרגל אחראי'}, yadcfColumnOptions)
         ]);
 
+        scansTable.responsive.recalc();
+
         firebaseInit();
         var firestoreDb = firestoreDbInit();
 
@@ -473,10 +475,6 @@
                 });
                 $('#scans-table-container').removeClass('scans-table-container-hidden');
                 $('#scans-table').DataTable().rows.add(rows).draw();
-                // We can recalc responsive layout based on the data,
-                // but it might not be the best idea, since it will
-                // be based only on the data on the first page.
-                //scansTable.responsive.recalc();
                 $('#page-loader').hide();
             })
             .catch(function (error) {
