@@ -432,11 +432,11 @@
             }
         };
         yadcf.init(scansTable, [
-            Object.assign({column_number: 1, filter_default_label: 'קורס'}, yadcfColumnOptions),
-            Object.assign({column_number: 3, filter_default_label: 'סמסטר'}, yadcfColumnOptions),
-            Object.assign({column_number: 4, filter_default_label: 'מועד'}, yadcfColumnOptions),
-            Object.assign({column_number: 5, filter_default_label: 'מרצה אחראי'}, yadcfColumnOptions),
-            Object.assign({column_number: 6, filter_default_label: 'מתרגל אחראי'}, yadcfColumnOptions),
+            $.extend({column_number: 1, filter_default_label: 'קורס'}, yadcfColumnOptions),
+            $.extend({column_number: 3, filter_default_label: 'סמסטר'}, yadcfColumnOptions),
+            $.extend({column_number: 4, filter_default_label: 'מועד'}, yadcfColumnOptions),
+            $.extend({column_number: 5, filter_default_label: 'מרצה אחראי'}, yadcfColumnOptions),
+            $.extend({column_number: 6, filter_default_label: 'מתרגל אחראי'}, yadcfColumnOptions)
         ]);
 
         firebaseInit();
