@@ -580,10 +580,10 @@
                     var data = row.data();
 
                     var selectSemester = body.find('#detail-semester');
-                    // Show next year's semesters when we're past November.
-                    var nineMonthsForward = new Date();
-                    nineMonthsForward.setMonth(nineMonthsForward.getMonth() + 9);
-                    for (var year = 2000; year <= nineMonthsForward.getFullYear(); year++) {
+                    // Show next year's semesters when we're past October.
+                    var nineMonthsAgo = new Date();
+                    nineMonthsAgo.setMonth(nineMonthsAgo.getMonth() - 9);
+                    for (var year = 2000; year <= nineMonthsAgo.getFullYear(); year++) {
                         for (var season = 1; season <= 3; season++) {
                             var semester = year.toString() + '0' + season.toString();
                             selectSemester.prepend($('<option>', {
