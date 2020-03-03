@@ -67,7 +67,7 @@ function uploadFilesFrame(form) {
     
     return JSON.stringify({"status": 'ok', "fileId": file.getId()});
   } catch (error) {
-    return JSON.stringify({"status": 'error', "data": error.toString()+','+e.lineNumber+','+e.stack});
+    return JSON.stringify({"status": 'error', "data": error.stack});
   }
 }
 
