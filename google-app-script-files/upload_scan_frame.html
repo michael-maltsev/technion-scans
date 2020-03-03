@@ -203,6 +203,9 @@
                     </div>
                 </div>
 
+                <input type="hidden" id="scan-file-base64" name="scan-file-base64">
+                <input type="hidden" id="scan-file-name" name="scan-file-name">
+
                 <hr class="mb-4">
                 <button class="btn btn-primary btn-lg btn-block" id="submit-button" type="submit">שלח סריקה</button>
             </form>
@@ -260,13 +263,42 @@
             }
             this.classList.remove('was-validated');
 
-            google.script.run
+            // Workaround for the following bug: https://stackoverflow.com/q/60514594
+
+            var thisForm = this;
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var result = event.target.result;
+                var base64 = result.substr(result.indexOf(',') + 1);
+                $('#scan-file-base64').val(base64);
+
+                var filename = $('#scan-file').val().split('\\').pop();
+                $('#scan-file-name').val(filename);
+
+                $('#scan-file').prop('disabled', true);
+
+                google.script.run
+                    .withFailureHandler(fileUploadedFailure)
+                    .withSuccessHandler(fileUploaded)
+                    .uploadFilesFrame(thisForm);
+
+                $('#upload-loader').show();
+                $('#submit-button').text('שולח סריקה...');
+            };
+            reader.onerror = function (event) {
+                alert("Error: " + event.target.error.code);
+            };
+            reader.readAsDataURL(document.getElementById('scan-file').files[0]);
+
+            // Original code, before workaround:
+
+            /*google.script.run
                 .withFailureHandler(fileUploadedFailure)
                 .withSuccessHandler(fileUploaded)
                 .uploadFilesFrame(this);
 
             $('#upload-loader').show();
-            $('#submit-button').text('שולח סריקה...');
+            $('#submit-button').text('שולח סריקה...');*/
         });
 
         firebaseInit();
@@ -333,6 +365,7 @@
 
         function onFileUploadError(msg) {
             alert(msg);
+            $('#scan-file').prop('disabled', false); // part of the workaround above
             $('#upload-loader').hide();
             $('#submit-button').text('שלח סריקה');
         }
