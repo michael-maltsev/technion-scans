@@ -313,19 +313,25 @@
             "columnDefs": [
                 {
                     "targets": [2, 4, 5, 6],
-                    "render": $.fn.dataTable.render.text()
+                    "render": function (data, type) {
+                        if (type !== 'display') {
+                            return escapeHtmlAsUnicodeLookalike(data.toString());
+                        }
+
+                        return escapeHtml(data.toString());
+                    }
                 }, {
                     "targets": 0,
                     "className": "text-center",
                     "width": "1%",
                     "searchable": false,
                     "sortable": false,
-                    "render": function (oObj) {
-                        if (!/^[a-zA-Z0-9-_]+$/.test(oObj)) {
+                    "render": function (data) {
+                        if (!/^[a-zA-Z0-9-_]+$/.test(data)) {
                             return '???';
                         }
 
-                        var url = 'https://drive.google.com/file/d/' + oObj + '/view';
+                        var url = 'https://drive.google.com/file/d/' + data + '/view';
                         return $('<a target="_blank" rel="noopener" class="btn btn-secondary btn-sm">הצג</a>')
                             .prop('href', url).attr('onclick', 'arguments[0].stopPropagation();')[0].outerHTML;
                     }
@@ -334,43 +340,55 @@
                     "visible": !displayCourse,
                     "className": "text-center",
                     "width": "1%",
-                    "render": function (oObj) {
-                        var name = courseNumberToName(oObj);
-                        if (!name) {
-                            return $('<a>').prop('href', '?course=' + oObj).text(oObj)[0].outerHTML;
+                    "render": function (data, type) {
+                        var name = courseNumberToName(data);
+
+                        if (type !== 'display') {
+                            if (name) {
+                                return escapeHtmlAsUnicodeLookalike(data + ' - ' + name);
+                            } else {
+                                return escapeHtmlAsUnicodeLookalike(data);
+                            }
                         }
 
-                        var invisibleSpan = $('<span style="display: none;"></span>').text(' - ' + name);
-                        var link = $('<a data-toggle="tooltip"></a>')
-                            .prop('title', name)
-                            .prop('href', '?course=' + oObj)
-                            .text(oObj);
+                        var link = $('<a>')
+                            .prop('href', '?course=' + data)
+                            .text(data);
 
-                        return link[0].outerHTML + invisibleSpan[0].outerHTML;
+                        if (name) {
+                            link.attr('data-toggle', 'tooltip').prop('title', name);
+                        }
+
+                        return link[0].outerHTML;
                     }
                 }, {
                     "targets": 3,
-                    "render": {
-                        _: function (oObj) {
-                            return (oObj && /^\d{6}$/.test(oObj)) ? semesterFriendlyName(oObj) : '???';
-                        },
-                        sort: function (oObj) {
-                            return oObj;
+                    "render": function (data, type) {
+                        if (type === 'sort' || type === 'type') {
+                            return data;
                         }
+
+                        var text = (data && /^\d{6}$/.test(data)) ? semesterFriendlyName(data) : '???';
+
+                        if (type !== 'display') {
+                            return escapeHtmlAsUnicodeLookalike(text);
+                        }
+
+                        return escapeHtml(text);
                     }
                 }, {
                     "targets": 7,
-                    "render": function (oObj) {
+                    "render": function (data) {
                         var textLimit = 60;
                         var textMinTruncateLen = 10;
 
-                        if (oObj.length < textLimit + textMinTruncateLen) {
+                        if (data.length < textLimit + textMinTruncateLen) {
                             // Escape HTML while retaining line breaks.
-                            return $('<div>').text(oObj).html().replace(/\n/g, '<br>');
+                            return $('<div>').text(data).html().replace(/\n/g, '<br>');
                         }
 
-                        var textShown = oObj.slice(0, textLimit);
-                        var textHidden = oObj.slice(textLimit);
+                        var textShown = data.slice(0, textLimit);
+                        var textHidden = data.slice(textLimit);
 
                         // Escape HTML while retaining line breaks.
                         var textShownHtml = $('<div>').text(textShown).html().replace(/\n/g, '<br>');
@@ -388,16 +406,16 @@
                     "width": "1%",
                     "searchable": false,
                     "sortable": false,
-                    "render": function (oObj) {
-                        if (!/^[a-zA-Z0-9-_]+$/.test(oObj)) {
+                    "render": function (data) {
+                        if (!/^[a-zA-Z0-9-_]+$/.test(data)) {
                             return '???';
                         }
 
                         return '<button class="btn btn-secondary dropdown-toggle" id="actionsMenu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
                             + '⚙</button>'
                             + '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'
-                            + '<a class="dropdown-item" href="#" onclick="globalFunctions.scanAddComment(this,\'' + oObj + '\');return false;">הוסף הערה</a>'
-                            + '<a class="dropdown-item" href="#" onclick="globalFunctions.scanUpdateDetails(this,\'' + oObj + '\');return false;">עדכן פרטים</a>'
+                            + '<a class="dropdown-item" href="#" onclick="globalFunctions.scanAddComment(this,\'' + data + '\');return false;">הוסף הערה</a>'
+                            + '<a class="dropdown-item" href="#" onclick="globalFunctions.scanUpdateDetails(this,\'' + data + '\');return false;">עדכן פרטים</a>'
                             + '</div>';
                     }
                 }
@@ -678,6 +696,27 @@
                 default:
                     return semester;
             }
+        }
+
+        // https://stackoverflow.com/a/6234804
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // https://github.com/vedmack/yadcf/issues/629
+        function escapeHtmlAsUnicodeLookalike(unsafe) {
+            return unsafe
+                .replace(/&/g, 'ꝸ') // LATIN SMALL LETTER UM
+                .replace(/</g, '˂') // MODIFIER LETTER LEFT ARROWHEAD
+                .replace(/>/g, '˃') // MODIFIER LETTER RIGHT ARROWHEAD
+                .replace(/"/g, 'ʺ') // MODIFIER LETTER DOUBLE PRIME
+                //.replace(/'/g, 'ʹ') // MODIFIER LETTER PRIME
+                ;
         }
     })();
 </script>
