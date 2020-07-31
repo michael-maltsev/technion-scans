@@ -1,0 +1,105 @@
+.scans-table-container-hidden {
+    height: 0;
+    overflow: hidden;
+}
+
+th .scans-column-header-with-yadcf {
+    display: none;
+}
+
+/* DataTables RTL fixes */
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: left;
+}
+
+@media screen and (max-width: 767px) {
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: center;
+    }
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+    margin-left: 0;
+    margin-right: 0.5em;
+}
+
+table.table-bordered.dataTable th,
+table.table-bordered.dataTable td {
+    border-left-width: 1px;
+    border-right-width: 0;
+}
+
+table.table-bordered.dataTable th:last-child,
+table.table-bordered.dataTable th:last-child,
+table.table-bordered.dataTable td:last-child,
+table.table-bordered.dataTable td:last-child {
+    border-left-width: 0;
+}
+
+/* bootstrap4-dialog RTL fix */
+.bootstrap-dialog .bootstrap-dialog-header {
+    flex-grow: 1;
+}
+
+.bootstrap-dialog .bootstrap-dialog-close-button {
+    float: left;
+}
+
+/* bootstrap4-dialog - add spacing between buttons */
+.bootstrap-dialog .bootstrap-dialog-footer-buttons .btn {
+    margin-right: .5rem;
+}
+
+/* select2 - make block and not inline-block */
+.yadcf-filter-wrapper {
+    display: block;
+}
+
+/* select2 bootstrap4 improve width with bold text */
+.yadcf-filter {
+    font-weight: bold;
+    padding-left: 14px;
+}
+
+/* select2 bootstrap4 - reduce height */
+.select2-container--bootstrap4 .select2-selection--single {
+    height: 28px !important;
+}
+.select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+    line-height: 28px;
+}
+
+/* select2 bootstrap4 theme RTL fixes: https://github.com/ttskch/select2-bootstrap4-theme/issues/21 */
+html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
+    margin-left: auto;
+    margin-right: -4px;
+}
+html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
+    left: 3px;
+    right: auto;
+}
+html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+    padding-right: 0;
+    padding-left: 5px;
+    float: right;
+    margin-right: 0;
+    margin-left: 5px;
+}
+html[dir='rtl'] .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice__remove {
+    margin-left: 1px;
+    margin-right: 3px;
+    float: right;
+}
+html[dir='rtl'] .input-group-prepend ~ .select2-container--bootstrap4 .select2-selection {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0.2rem;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0.2rem;
+}
+html[dir='rtl'] .select2-container--bootstrap4 .select2-selection__clear {
+    padding-right: 0.3em;
+    padding-left: 0;
+    float: left;
+    margin-right: auto;
+    margin-left: 0.3em;
+}
