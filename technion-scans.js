@@ -58,10 +58,6 @@ var globalFunctions = {};
             {
                 targets: [2, 4, 5, 6],
                 render: function (data, type) {
-                    if (type !== 'display') {
-                        return escapeHtmlAsUnicodeLookalike(data.toString());
-                    }
-
                     return escapeHtml(data.toString());
                 }
             }, {
@@ -89,9 +85,9 @@ var globalFunctions = {};
 
                     if (type !== 'display') {
                         if (name) {
-                            return escapeHtmlAsUnicodeLookalike(data + ' - ' + name);
+                            return escapeHtml(data + ' - ' + name);
                         } else {
-                            return escapeHtmlAsUnicodeLookalike(data);
+                            return escapeHtml(data);
                         }
                     }
 
@@ -113,10 +109,6 @@ var globalFunctions = {};
                     }
 
                     var text = (data && /^\d{6}$/.test(data)) ? semesterFriendlyName(data) : '???';
-
-                    if (type !== 'display') {
-                        return escapeHtmlAsUnicodeLookalike(text);
-                    }
 
                     return escapeHtml(text);
                 }
@@ -450,16 +442,5 @@ var globalFunctions = {};
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
-    }
-
-    // https://github.com/vedmack/yadcf/issues/629
-    function escapeHtmlAsUnicodeLookalike(unsafe) {
-        return unsafe
-            .replace(/&/g, 'ꝸ') // LATIN SMALL LETTER UM
-            .replace(/</g, '˂') // MODIFIER LETTER LEFT ARROWHEAD
-            .replace(/>/g, '˃') // MODIFIER LETTER RIGHT ARROWHEAD
-            .replace(/"/g, 'ʺ') // MODIFIER LETTER DOUBLE PRIME
-            //.replace(/'/g, 'ʹ') // MODIFIER LETTER PRIME
-            ;
     }
 })();
