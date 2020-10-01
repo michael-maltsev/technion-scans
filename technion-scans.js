@@ -289,8 +289,7 @@ var globalFunctions = {};
 
         BootstrapDialog.show({
             title: 'הוסף הערה',
-            message: '<input type="text" class="form-control" placeholder="הוסף הערה כאן...">'
-                + '<div class="pt-2">שימו לב שניתן גם להוסיף הערות בסריקה עצמה על ידי לחיצה על כפתור הפלוס מימין למעלה בתצוגת הסריקה.</div>',
+            message: '<input type="text" class="form-control" placeholder="הוסף הערה כאן...">',
             onshown: function (dialog) {
                 dialog.getModalBody().find('input[type="text"]').focus();
             },
