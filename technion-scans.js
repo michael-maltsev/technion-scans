@@ -195,7 +195,7 @@ var globalFunctions = {};
     };
     yadcf.init(scansTable, [
         $.extend({column_number: 1, filter_default_label: 'קורס'}, yadcfColumnOptions),
-        $.extend({column_number: 3, filter_default_label: 'סמסטר'}, yadcfColumnOptions),
+        $.extend({column_number: 3, filter_default_label: 'סמסטר', sort_as: 'custom', sort_as_custom_func: sortSemestersFunc}, yadcfColumnOptions),
         $.extend({column_number: 4, filter_default_label: 'מועד'}, yadcfColumnOptions),
         $.extend({column_number: 5, filter_default_label: 'מרצה אחראי'}, yadcfColumnOptions),
         $.extend({column_number: 6, filter_default_label: 'מתרגל אחראי'}, yadcfColumnOptions)
@@ -413,6 +413,24 @@ var globalFunctions = {};
                 }
             }]
         });
+    }
+
+    function sortSemestersFunc(semester1, semester2) {
+        var seasons = {
+            'חורף': 1,
+            'אביב': 2,
+            'קיץ': 3
+        };
+
+        var semester1split = semester1.split(' ')
+        var season1 = seasons[semester1split[0]] || 0;
+        var year1 = parseInt(semester1split[1].slice(-4), 10);
+
+        var semester2split = semester2.split(' ')
+        var season2 = seasons[semester2split[0]] || 0;
+        var year2 = parseInt(semester2split[1].slice(-4), 10);
+
+        return year2 - year1 || season2 - season1;
     }
 
     function semesterFriendlyName(semester) {
