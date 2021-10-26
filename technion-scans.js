@@ -34,7 +34,7 @@ var globalFunctions = {};
 
         BootstrapDialog.show({
             title: 'שליחת סריקה חדשה',
-            message: '<iframe src="' + url + '" frameBorder="0" width="100%" height="475px"></iframe>',
+            message: '<iframe src="' + url + '" frameBorder="0" width="100%" height="500px"></iframe>',
             size: BootstrapDialog.SIZE_WIDE,
             onshow: function (dialog) {
                 dialog.getModalBody().css('padding', '0');
