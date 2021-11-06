@@ -343,16 +343,19 @@ var globalFunctions = {};
                 var data = row.data();
 
                 var selectSemester = body.find('#detail-semester');
-                // Show next year's semesters when we're past October.
-                var nineMonthsAgo = new Date();
-                nineMonthsAgo.setMonth(nineMonthsAgo.getMonth() - 9);
-                for (var year = 2000; year <= nineMonthsAgo.getFullYear(); year++) {
-                    for (var season = 1; season <= 3; season++) {
+                var semesterEndMonths = ['03', '07', '10'];
+                var done = false;
+                var monthNow = new Date().toISOString().slice(0, '2000-01'.length);
+                for (var year = 2000; !done; year++) {
+                    for (var season = 1; !done && season <= 3; season++) {
                         var semester = year.toString() + '0' + season.toString();
                         selectSemester.prepend($('<option>', {
                             value: semester,
                             text: semesterFriendlyName(semester)
                         }));
+
+                        var semesterEnd = (year + 1) + '-' + semesterEndMonths[season - 1];
+                        done = semesterEnd > monthNow;
                     }
                 }
                 selectSemester.prepend($('<option value="">לחצו לבחירת סמסטר...</option>')).val('');
