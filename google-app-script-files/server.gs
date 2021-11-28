@@ -34,12 +34,7 @@ function uploadFilesFrame(form) {
     }
 
     var courseNumber = ('000000' + form['detail-course-id']).slice(-6);
-
-    // Workaround for the following bug: https://stackoverflow.com/q/60514594
-    var fileBlob = Utilities.newBlob(Utilities.base64Decode(form['scan-file-base64']), 'application/octet-stream', form['scan-file-name']);
-
-    // Original code, before workaround:
-    //var fileBlob = form['scan-file'];
+    var fileBlob = form['scan-file'];
 
     var fileData = {
       'course-number': courseNumber,
