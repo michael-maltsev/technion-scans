@@ -64,11 +64,11 @@ function uploadFilesFrame(form) {
     renameBlobOrFile(fileBlob, makeScanName(fileData));
     var file = courseFolder.createFile(fileBlob);
     file.setDescription(JSON.stringify(fileData));
-    try {
+    /*try {
       file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.COMMENT);
     } catch (error) {
       // Not supported, ignore.
-    }
+    }*/
 
     return JSON.stringify({ status: 'ok', fileId: file.getId() });
   } catch (error) {
@@ -104,37 +104,37 @@ function makeScanName(fileData) {
   var year = parseInt(semester.slice(0, 4), 10) + 1;
   var season = semester.slice(4);
   switch (season) {
-  case '01':
-    season = 'Winter';
-    break;
-  case '02':
-    season = 'Spring';
-    break;
-  case '03':
-    season = 'Summer';
-    break;
-  default:
-    season = 'Unknown';
-    break;
+    case '01':
+      season = 'Winter';
+      break;
+    case '02':
+      season = 'Spring';
+      break;
+    case '03':
+      season = 'Summer';
+      break;
+    default:
+      season = 'Unknown';
+      break;
   }
 
   var type = d.term;
   switch (type) {
-  case 'מועד א\'':
-    type = 'A';
-    break;
-  case 'מועד ב\'':
-    type = 'B';
-    break;
-  case 'מועד ג\'':
-    type = 'C';
-    break;
-  case 'בוחן אמצע':
-    type = 'M';
-    break;
-  default:
-    type = 'U';
-    break;
+    case 'מועד א\'':
+      type = 'A';
+      break;
+    case 'מועד ב\'':
+      type = 'B';
+      break;
+    case 'מועד ג\'':
+      type = 'C';
+      break;
+    case 'בוחן אמצע':
+      type = 'M';
+      break;
+    default:
+      type = 'U';
+      break;
   }
 
   return d['course-number']
