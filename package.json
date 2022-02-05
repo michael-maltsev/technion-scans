@@ -7,14 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "GPLV3",
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint": "^8.3.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-es5": "^1.2.0",
-    "eslint-plugin-es5": "^1.5.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-react": "^7.27.1"
-  }
+    "eslint": "^8.6.0",
+    "eslint-plugin-compat": "^4.0.1"
+  },
+  "browserslist": [
+    "ie 11"
+  ]
 }
