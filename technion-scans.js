@@ -1,9 +1,10 @@
+'use strict';
+
 /* global BootstrapDialog, yadcf, firebase */
 
 var globalFunctions = {};
 
 (function () {
-    'use strict';
 
     globalFunctions.scanAddComment = scanAddComment;
     globalFunctions.scanUpdateDetails = scanUpdateDetails;
@@ -248,7 +249,7 @@ var globalFunctions = {};
     // https://stackoverflow.com/a/901144
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, '\\$&');
+        name = name.replace(/[[\]]/g, '\\$&');
         var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
             results = regex.exec(url);
         if (!results) return null;
