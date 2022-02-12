@@ -7,6 +7,30 @@ th .scans-column-header-with-yadcf {
     display: none;
 }
 
+/* Unset nowrap style that causes scrolling on mobile */
+div.dataTables_wrapper div.dataTables_info {
+    white-space: normal;
+}
+
+/* Add a horizontal scrollbar to the table */
+div.dataTables_wrapper > .row:nth-child(2) > .col-sm-12 {
+    overflow-x: auto;
+}
+
+/* Add a horizontal scrollbar to pagination */
+div.dataTables_wrapper div.dataTables_paginate {
+    overflow-x: auto;
+}
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    min-width: min-content;
+}
+@media screen and (max-width: 767px) {
+    /* Backport from a newer version - center pagination on mobile */
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+        justify-content: center !important;
+    }
+}
+
 /* DataTables RTL fixes */
 div.dataTables_wrapper div.dataTables_filter {
     text-align: left;
