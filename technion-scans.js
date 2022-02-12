@@ -46,7 +46,6 @@ var globalFunctions = {};
     });
 
     var scansTable = $('#scans-table').DataTable({
-        responsive: true,
         stateSave: true,
         fnStateLoadParams: function (oSettings, oData) {
             delete oData.columns;
@@ -206,8 +205,6 @@ var globalFunctions = {};
         $.extend({ column_number: 6, filter_default_label: 'מתרגל אחראי' }, yadcfColumnOptions)
     ]);
 
-    scansTable.responsive.recalc();
-
     firebaseInit();
     var firestoreDb = firestoreDbInit();
 
@@ -280,12 +277,8 @@ var globalFunctions = {};
     }
 
     function scanAddComment(element, scanId) {
-        // https://stackoverflow.com/a/30730405, adapted to work correctly with the responsive plugin.
-        var trElement = $(element).closest('tr');
-        if (trElement.hasClass('child')) {
-            trElement = trElement.prev();
-        }
-        var row = $('#scans-table').DataTable().row(trElement);
+        // https://stackoverflow.com/a/30730405
+        var row = $('#scans-table').DataTable().row($(element).closest('tr'));
 
         BootstrapDialog.show({
             title: 'הוסף הערה',
@@ -325,12 +318,8 @@ var globalFunctions = {};
     }
 
     function scanUpdateDetails(element, scanId) {
-        // https://stackoverflow.com/a/30730405, adapted to work correctly with the responsive plugin.
-        var trElement = $(element).closest('tr');
-        if (trElement.hasClass('child')) {
-            trElement = trElement.prev();
-        }
-        var row = $('#scans-table').DataTable().row(trElement);
+        // https://stackoverflow.com/a/30730405
+        var row = $('#scans-table').DataTable().row($(element).closest('tr'));
 
         var message = $('#update-details-form-container')[0].innerHTML;
 
