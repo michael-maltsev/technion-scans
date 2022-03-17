@@ -184,7 +184,7 @@ var globalFunctions = {};
             this.find('[data-toggle="tooltip"]').tooltip('dispose');
         }
     });
-    $('#scans-table').tooltip({ selector: '[data-toggle=tooltip]' });
+    $('#scans-table').tooltip({ selector: '[data-toggle=tooltip]', boundary: 'window' });
 
     var yadcfColumnOptions = {
         filter_reset_button_text: false,
