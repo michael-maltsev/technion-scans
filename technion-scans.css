@@ -7,6 +7,11 @@ th .scans-column-header-with-yadcf {
     display: none;
 }
 
+/* Mark filtered columns with a different color */
+div.yadcf-filter-wrapper:has(> .yadcf-filter.inuse) {
+    color: rgb(0,123,255,.75);
+}
+
 /* Unset nowrap style that causes scrolling on mobile */
 div.dataTables_wrapper div.dataTables_info {
     white-space: normal;
