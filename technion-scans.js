@@ -208,7 +208,7 @@ var globalFunctions = {};
     firebaseInit();
     var firestoreDb = firestoreDbInit();
 
-    firestoreDb.collection('scans').doc('allScans').get()
+    firestoreDb.collection('scans').doc(displayCourse || 'allScans').get()
         .then(function (doc) {
             if (!doc.exists) {
                 return;
@@ -220,14 +220,10 @@ var globalFunctions = {};
             var rows = [];
             Object.keys(scans).forEach(function (id) {
                 var d = scans[id];
-                if (displayCourse && d.course !== displayCourse) {
-                    return;
-                }
-
                 var commentsJoined = (comments[id] || []).join('\n');
                 rows.push([
                     id,
-                    d.course,
+                    displayCourse || d.course,
                     d.grade,
                     d.semester,
                     d.term,
@@ -296,7 +292,8 @@ var globalFunctions = {};
                         var update = {};
                         update['comments.' + scanId] = firebase.firestore.FieldValue.arrayUnion(text);
 
-                        firestoreDb.collection('scans').doc('allScans')
+                        var course = row.data()[1];
+                        firestoreDb.collection('scans').doc(course)
                             .update(update)
                             .then(function () {
                                 //console.log('Document successfully updated!');
@@ -356,7 +353,7 @@ var globalFunctions = {};
                 body.find('#detail-ta').val(data[6]);
             },
             onshown: function (dialog) {
-                dialog.getModalBody().find('#detail-course-id').focus();
+                dialog.getModalBody().find('#detail-grade').focus();
             },
             buttons: [{
                 label: 'עדכן',
@@ -373,7 +370,6 @@ var globalFunctions = {};
                     form.classList.remove('was-validated');
 
                     var data = {
-                        course: ('000000' + body.find('#detail-course-id').val()).slice(-6),
                         grade: parseFloat(body.find('#detail-grade').val()),
                         semester: body.find('#detail-semester').val(),
                         term: body.find('#detail-term').val(),
@@ -384,11 +380,11 @@ var globalFunctions = {};
                     var update = {};
                     update['scans.' + scanId] = data;
 
-                    firestoreDb.collection('scans').doc('allScans')
+                    var course = row.data()[1];
+                    firestoreDb.collection('scans').doc(course)
                         .update(update)
                         .then(function () {
                             //console.log('Document successfully updated!');
-                            row.data()[1] = data.course;
                             row.data()[2] = data.grade;
                             row.data()[3] = data.semester;
                             row.data()[4] = data.term;
