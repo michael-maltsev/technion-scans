@@ -13,17 +13,18 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="msapplication-config" content="icons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.5.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap4-dialog/css/bootstrap-dialog.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css">
     <link rel="stylesheet" href="select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" href="dataTables-yadcf/jquery.dataTables.yadcf.css">
+    <link rel="stylesheet" href="modules/virtual-select/virtual-select.css">
     <link rel="stylesheet" href="loader.css">
     <link rel="stylesheet" href="technion-scans.css">
 </head>
 <body class="bg-light">
-<div class="container">
+<div class="container d-flex flex-column min-vh-100">
     <div class="py-5 text-center">
         <!--img class="d-block mx-auto mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72"-->
         <div class="mx-auto mb-4">
@@ -34,41 +35,56 @@
         ניתן לגשת ל-Google Drive <a href="https://drive.google.com/open?id=1Dr3e27tv-vRwf0UvzQVcT0soRn0SrsNZ" target="_blank" rel="noopener">כאן</a></p>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="loading" id="page-loader">Loading&#8230;</div>
-            <div id="scans-table-container" class="scans-table-container-hidden">
-                <table id="scans-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                    <thead>
-                    <tr>
-                        <th>הסריקה</th>
-                        <th><span class="scans-column-header-with-yadcf">קורס</span></th>
-                        <th>ציון</th>
-                        <th><span class="scans-column-header-with-yadcf">סמסטר</span></th>
-                        <th><span class="scans-column-header-with-yadcf">מועד</span></th>
-                        <th><span class="scans-column-header-with-yadcf">מרצה אחראי</span></th>
-                        <th><span class="scans-column-header-with-yadcf">מתרגל אחראי</span></th>
-                        <th>הערות</th>
-                        <th>פעולות</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    <tr>
-                        <th>הסריקה</th>
-                        <th>קורס</th>
-                        <th>ציון</th>
-                        <th>סמסטר</th>
-                        <th>מועד</th>
-                        <th>מרצה אחראי</th>
-                        <th>מתרגל אחראי</th>
-                        <th>הערות</th>
-                        <th>פעולות</th>
-                    </tr>
-                    </tfoot>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+    <div id="scans-container" class="flex-fill d-flex flex-column">
+        <div class="loading" id="page-loader">Loading&#8230;</div>
+
+        <div id="scans-course-select-container" class="d-none flex-fill flex-column justify-content-center gap-5">
+            <form id="scans-course-select-container-form">
+                <div class="row">
+                    <div class="col-12 col-lg-6 offset-lg-3">
+                        <!--select id="scans-course-select" name="course" class="form-control" required>
+                            <option></option>
+                        </select-->
+                        <div id="scans-course-select"></div>
+                        <input id="scans-course-value" type="hidden" name="course">
+
+                        <button type="submit" class="btn btn-primary" disabled>הצג</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="scans-table-container" class="scans-table-container-hidden">
+            <table id="scans-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>הסריקה</th>
+                    <th><span class="scans-column-header-with-yadcf">קורס</span></th>
+                    <th>ציון</th>
+                    <th><span class="scans-column-header-with-yadcf">סמסטר</span></th>
+                    <th><span class="scans-column-header-with-yadcf">מועד</span></th>
+                    <th><span class="scans-column-header-with-yadcf">מרצה אחראי</span></th>
+                    <th><span class="scans-column-header-with-yadcf">מתרגל אחראי</span></th>
+                    <th>הערות</th>
+                    <th>פעולות</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>הסריקה</th>
+                    <th>קורס</th>
+                    <th>ציון</th>
+                    <th>סמסטר</th>
+                    <th>מועד</th>
+                    <th>מרצה אחראי</th>
+                    <th>מתרגל אחראי</th>
+                    <th>הערות</th>
+                    <th>פעולות</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -139,12 +155,14 @@
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://cdn.rtlcss.com/bootstrap/v4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.rtlcss.com/bootstrap/v4.5.3/js/bootstrap.min.js"></script>
 <script src="bootstrap4-dialog/js/bootstrap-dialog.min.js"></script>
 <script src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/i18n/he.js"></script>
 <script src="dataTables-yadcf/jquery.dataTables.yadcf.js"></script>
+<script src="modules/q/q.js"></script>
+<script src="modules/virtual-select/virtual-select-jquery.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase-firestore.js"></script>
 <script src="technion-scans.js"></script>

@@ -1,6 +1,6 @@
 'use strict';
 
-/* global BootstrapDialog, yadcf, firebase */
+/* global BootstrapDialog, yadcf, Q, firebase */
 
 var globalFunctions = {};
 
@@ -208,38 +208,42 @@ var globalFunctions = {};
     firebaseInit();
     var firestoreDb = firestoreDbInit();
 
-    firestoreDb.collection('scans').doc(displayCourse || 'allScans').get()
-        .then(function (doc) {
-            if (!doc.exists) {
-                return;
-            }
+    if (!displayCourse) {
+        loadCourseNames();
+    } else {
+        firestoreDb.collection('scans').doc(displayCourse).get()
+            .then(function (doc) {
+                if (!doc.exists) {
+                    return;
+                }
 
-            var data = doc.data();
-            var scans = data.scans;
-            var comments = data.comments;
-            var rows = [];
-            Object.keys(scans).forEach(function (id) {
-                var d = scans[id];
-                var commentsJoined = (comments[id] || []).join('\n');
-                rows.push([
-                    id,
-                    displayCourse || d.course,
-                    d.grade,
-                    d.semester,
-                    d.term,
-                    d.lecturer,
-                    d.ta,
-                    commentsJoined,
-                    id
-                ]);
+                var data = doc.data();
+                var scans = data.scans;
+                var comments = data.comments;
+                var rows = [];
+                Object.keys(scans).forEach(function (id) {
+                    var d = scans[id];
+                    var commentsJoined = (comments[id] || []).join('\n');
+                    rows.push([
+                        id,
+                        displayCourse,
+                        d.grade,
+                        d.semester,
+                        d.term,
+                        d.lecturer,
+                        d.ta,
+                        commentsJoined,
+                        id
+                    ]);
+                });
+                $('#scans-table-container').removeClass('scans-table-container-hidden');
+                $('#scans-table').DataTable().rows.add(rows).draw();
+                $('#page-loader').hide();
+            })
+            .catch(function (error) {
+                alert('Error loading data from server: ' + error);
             });
-            $('#scans-table-container').removeClass('scans-table-container-hidden');
-            $('#scans-table').DataTable().rows.add(rows).draw();
-            $('#page-loader').hide();
-        })
-        .catch(function (error) {
-            alert('Error loading data from server: ' + error);
-        });
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -270,6 +274,98 @@ var globalFunctions = {};
         var db = firebase.firestore();
         db.settings({ timestampsInSnapshots: true }); // silence a warning
         return db;
+    }
+
+    function loadCourseNames() {
+        // select2 is 2 slow!
+        /*$('#scans-course-select').select2({
+            placeholder: 'בחרו קורס',
+            allowClear: true,
+            data: data
+        });*/
+
+        var DataProvider = function () {
+            this.availableItems = null;
+            this.items = null;
+        };
+        DataProvider.prototype.load = function () {
+            var deferred = Q.defer();
+            var self = this;
+            if (this.availableItems) {
+                deferred.resolve();
+            } else {
+                firestoreDb.collection('scans').get().then(function (snapshot) {
+                    self.availableItems = [];
+                    snapshot.docs.forEach(function (doc) {
+                        var item = doc.id;
+
+                        var name = item;
+                        var courseName = courseNumberToName(item);
+                        if (courseName) {
+                            name += ' - ' + courseName;
+                        }
+
+                        self.availableItems.push({
+                            id: item,
+                            name: name
+                        });
+                    });
+                    self.items = self.availableItems;
+
+                    // Prevent flickering with setTimeout.
+                    setTimeout(function () {
+                        $('#scans-course-select-container').removeClass('d-none').addClass('d-flex');
+                        $('#page-loader').hide();
+                    }, 0);
+
+                    deferred.resolve();
+                }).catch(function (error) {
+                    alert('Error loading data from server: ' + error);
+                });
+            }
+            return deferred.promise;
+        };
+        DataProvider.prototype.filter = function (search) {
+            var searchArray = search.toLowerCase().split(/\s+/);
+            if (searchArray.length > 0) {
+                this.items = this.availableItems.filter(function (item) {
+                    return searchArray.every(function (word) {
+                        return item.name.indexOf(word) !== -1;
+                    });
+                });
+            } else {
+                this.items = this.availableItems;
+            }
+        };
+        DataProvider.prototype.get = function (firstItem, lastItem) {
+            return this.items.slice(firstItem, lastItem);
+        };
+        DataProvider.prototype.size = function () {
+            return this.items.length;
+        };
+        DataProvider.prototype.identity = function (item) {
+            return item.id;
+        };
+        DataProvider.prototype.displayText = function (item, extended) {
+            if (item) {
+                return item.name;
+                //return extended ? item.name + ' (' + item.id + ')' : item.name;
+            } else {
+                return '';
+            }
+        };
+        DataProvider.prototype.noSelectionText = function () {
+            return 'בחרו קורס';
+        };
+        var dataProvider = new DataProvider();
+
+        $('#scans-course-select').virtualselect({
+            dataProvider: dataProvider,
+            onSelect: function (item) {
+                $('#scans-course-value').val(item.id);
+                $('#scans-course-select-container button[type=submit]').prop('disabled', false);
+            },
+        }).virtualselect('load');
     }
 
     function scanAddComment(element, scanId) {

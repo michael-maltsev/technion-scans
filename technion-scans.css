@@ -17,6 +17,28 @@ div.dataTables_wrapper div.dataTables_info {
     white-space: normal;
 }
 
+/* Virtual select and the button below customizations */
+#scans-course-select {
+    max-height: 60px;
+}
+#scans-course-select .ui-virtual-select--search-input {
+    font-size: 1.6rem;
+}
+#scans-course-select .ui-virtual-select--items {
+    /* fix redundant scrollbar */
+    box-sizing: content-box;
+    overflow-y: auto !important;
+    /* keep dropdown list on top */
+    position: relative;
+    z-index: 1;
+}
+#scans-course-select-container button {
+    width: 100%;
+    font-size: 1.6rem;
+    margin-top: 1rem;
+    height: 65px;
+}
+
 /* Add a horizontal scrollbar to the table */
 div.dataTables_wrapper > .row:nth-child(2) > .col-sm-12 {
     overflow-x: auto;
