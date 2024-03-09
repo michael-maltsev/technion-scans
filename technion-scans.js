@@ -213,11 +213,10 @@ var globalFunctions = {};
     } else {
         firestoreDb.collection('scans').doc(displayCourse).get()
             .then(function (doc) {
-                if (!doc.exists) {
-                    return;
-                }
-
-                var data = doc.data();
+                var data = doc.exists ? doc.data() : {
+                    scans: {},
+                    comments: {}
+                };
                 var scans = data.scans;
                 var comments = data.comments;
                 var rows = [];
