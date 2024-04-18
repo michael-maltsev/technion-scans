@@ -312,20 +312,28 @@
             try {
                 var obj = JSON.parse(status);
                 if (obj.status === 'ok') {
-                    var update = {};
-                    update['scans.' + obj.fileId] = {
+                    var data = {
                         grade: parseFloat($('#detail-grade').val()),
                         semester: $('#detail-semester').val(),
                         term: $('#detail-term').val(),
                         lecturer: $('#detail-lecturer').val().trim().replace(/\s+/g, ' '),
                         ta: $('#detail-ta').val().trim().replace(/\s+/g, ' ')
                     };
-                    var comments = $('#detail-comments').val().trim().replace(/\s+/g, ' ');
-                    update['comments.' + obj.fileId] = comments ? [comments] : [];
+                    var comment = $('#detail-comments').val().trim().replace(/\s+/g, ' ');
+                    var comments = comment ? [comment] : [];
+
+                    var update = {
+                        scans: {
+                            [obj.fileId]: data
+                        },
+                        comments: {
+                            [obj.fileId]: comments
+                        }
+                    };
 
                     var course = ('000000' + $('#detail-course-id').val()).slice(-6);
                     firestoreDb.collection('scans').doc(course)
-                        .update(update)
+                        .set(update, { merge: true })
                         .then(function () {
                             //console.log("Document successfully updated!");
                             $("#new-scan-form :input").prop('disabled', true);
