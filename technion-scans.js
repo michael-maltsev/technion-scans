@@ -9,15 +9,15 @@ var globalFunctions = {};
     globalFunctions.scanAddComment = scanAddComment;
     globalFunctions.scanUpdateDetails = scanUpdateDetails;
 
-    var displayCourse = getParameterByName('course');
-    if (displayCourse && !/^(0*[1-9][0-9]{0,5})$/.test(displayCourse)) {
-        displayCourse = null;
+    var displayCourse = stringToCourseNumber(getParameterByName('course'));
+    if (displayCourse) {
+        displayCourse = toOldCourseNumber(displayCourse);
     }
 
     var searchQuery = getParameterByName('search');
 
     if (displayCourse) {
-        var newTitle = displayCourse;
+        var newTitle = toNewCourseNumber(displayCourse);
         var displayCourseName = courseNumberToName(displayCourse);
         if (displayCourseName) {
             newTitle += ' - ' + displayCourseName;
@@ -30,7 +30,7 @@ var globalFunctions = {};
     $('#upload-new-scan-link').click(function () {
         var url = 'https://script.google.com/macros/s/AKfycbwydtnNiY0Pi5_znthdlZVKy3YP9khMMdtG8nSg_ejzpOl7_S9Y/exec?action=upload_frame';
         if (displayCourse) {
-            url += '&course=' + displayCourse;
+            url += '&course=' + toNewCourseNumber(displayCourse);
         }
 
         BootstrapDialog.show({
@@ -92,7 +92,7 @@ var globalFunctions = {};
                     }
 
                     var link = $('<a>')
-                        .prop('href', '?course=' + data)
+                        .prop('href', '?course=' + toNewCourseNumber(data))
                         .text(data);
 
                     if (name) {
@@ -257,6 +257,50 @@ var globalFunctions = {};
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
 
+    function stringToCourseNumber(str) {
+        if (!str || !/^[0-9]{1,8}$/.test(str)) {
+            return null;
+        }
+
+        if (str.length <= 6) {
+            return ('00000' + str).slice(-6);
+        } else {
+            return ('0000000' + str).slice(-8);
+        }
+    }
+
+    function toOldCourseNumber(course) {
+        var match = /^970300(\d\d)$/.exec(course);
+        if (match) {
+            return '9730' + match[1];
+        }
+
+        if (/^097300\d\d$/.exec(course)) {
+            return course;
+        }
+
+        match = /^0(\d\d\d)0(\d\d\d)$/.exec(course);
+        if (match) {
+            return match[1] + match[2];
+        }
+
+        return course;
+    }
+
+    function toNewCourseNumber(course) {
+        var match = /^9730(\d\d)$/.exec(course);
+        if (match) {
+            return '970300' + match[1];
+        }
+
+        match = /^(\d\d\d)(\d\d\d)$/.exec(course);
+        if (match) {
+            return '0' + match[1] + '0' + match[2];
+        }
+
+        return course;
+    }
+
     function firebaseInit() {
         var config = {
             apiKey: 'AIzaSyDoSZx7JsikUq1cGgvFkkNq_NRjAHhHIFQ',
@@ -298,14 +342,15 @@ var globalFunctions = {};
                     snapshot.docs.forEach(function (doc) {
                         var item = doc.id;
 
-                        var name = item;
+                        var id = toNewCourseNumber(item);
+                        var name = id;
                         var courseName = courseNumberToName(item);
                         if (courseName) {
                             name += ' - ' + courseName;
                         }
 
                         self.availableItems.push({
-                            id: item,
+                            id: id,
                             name: name
                         });
                     });
@@ -422,6 +467,8 @@ var globalFunctions = {};
                 var body = dialog.getModalBody();
                 var data = row.data();
 
+                var courseNumber = toNewCourseNumber(data[1]);
+
                 var selectSemester = body.find('#detail-semester');
                 var semesterEndMonths = ['03', '07', '10'];
                 var done = false;
@@ -440,7 +487,7 @@ var globalFunctions = {};
                 }
                 selectSemester.prepend($('<option value="">לחצו לבחירת סמסטר...</option>')).val('');
 
-                body.find('#detail-course-id').val(data[1]);
+                body.find('#detail-course-id').val(courseNumber);
                 body.find('#detail-grade').val(data[2]);
                 selectSemester.val(data[3]);
                 body.find('#detail-term').val(data[4]);

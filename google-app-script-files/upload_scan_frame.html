@@ -140,7 +140,7 @@
                 <div class="form-row">
                     <div class="form-group col-sm-6">
                         <label for="detail-course-id">מספר קורס</label>
-                        <input type="text" pattern="0*[1-9][0-9]{0,5}" class="form-control" id="detail-course-id" name="detail-course-id" required>
+                        <input type="text" pattern="[0-9]{1,8}" class="form-control" id="detail-course-id" name="detail-course-id" required>
                         <div class="invalid-feedback">
                             יש להכניס מספר קורס חוקי
                         </div>
@@ -331,7 +331,13 @@
                         }
                     };
 
-                    var course = ('000000' + $('#detail-course-id').val()).slice(-6);
+                    var course = $('#detail-course-id').val();
+                    if (course.length <= 6) {
+                        course = ('00000' + course).slice(-6);
+                    } else {
+                        course = ('0000000' + course).slice(-8);
+                    }
+
                     firestoreDb.collection('scans').doc(course)
                         .set(update, { merge: true })
                         .then(function () {

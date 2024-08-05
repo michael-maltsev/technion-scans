@@ -29,11 +29,18 @@ function doGet(e) {
 
 function uploadFilesFrame(form) {
   try {
-    if (!/^(0*[1-9][0-9]{0,5})$/.test(form['detail-course-id'])) {
+    if (!/^[0-9]{1,8}$/.test(form['detail-course-id'])) {
       return JSON.stringify({ status: 'error', data: 'Invalid input' });
     }
 
-    var courseNumber = ('000000' + form['detail-course-id']).slice(-6);
+    var courseNumber = form['detail-course-id'];
+    if (courseNumber.length <= 6) {
+      courseNumber = ('00000' + courseNumber).slice(-6);
+    } else {
+      courseNumber = ('0000000' + courseNumber).slice(-8);
+    }
+    courseNumber = toOldCourseNumber(courseNumber);
+
     var fileBlob = form['scan-file'];
 
     var fileData = {
@@ -142,4 +149,22 @@ function makeScanName(fileData) {
     + '_' + season
     + '_' + type
     + '_' + d.grade;
+}
+
+function toOldCourseNumber(course) {
+  var match = /^970300(\d\d)$/.exec(course);
+  if (match) {
+    return '9730' + match[1];
+  }
+
+  if (/^097300\d\d$/.exec(course)) {
+    return course;
+  }
+
+  match = /^0(\d\d\d)0(\d\d\d)$/.exec(course);
+  if (match) {
+    return match[1] + match[2];
+  }
+
+  return course;
 }
