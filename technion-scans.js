@@ -371,10 +371,24 @@ var globalFunctions = {};
         };
         DataProvider.prototype.filter = function (search) {
             var searchArray = search.toLowerCase().split(/\s+/);
-            if (searchArray.length > 0) {
+            if (searchArray.length > 1 || (searchArray.length === 1 && searchArray[0] !== '')) {
+                // Also search the old course numbers.
+                var searchArrayAlt = searchArray.map(function (word) {
+                    var course = stringToCourseNumber(word);
+                    if (!course) {
+                        return null;
+                    }
+
+                    course = toNewCourseNumber(course);
+                    return course !== word ? course : null;
+                });
+
                 this.items = this.availableItems.filter(function (item) {
-                    return searchArray.every(function (word) {
-                        return item.name.indexOf(word) !== -1;
+                    return searchArray.every(function (word, i) {
+                        return (
+                            item.name.indexOf(word) !== -1 ||
+                            (searchArrayAlt[i] && item.name.indexOf(searchArrayAlt[i]) !== -1)
+                        );
                     });
                 });
             } else {
