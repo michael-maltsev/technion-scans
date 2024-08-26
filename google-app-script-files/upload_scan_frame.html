@@ -331,14 +331,15 @@
                         }
                     };
 
-                    var course = $('#detail-course-id').val();
-                    if (course.length <= 6) {
-                        course = ('00000' + course).slice(-6);
+                    var courseNumber = $('#detail-course-id').val();
+                    if (courseNumber.length <= 6) {
+                        courseNumber = ('00000' + courseNumber).slice(-6);
                     } else {
-                        course = ('0000000' + course).slice(-8);
+                        courseNumber = ('0000000' + courseNumber).slice(-8);
                     }
+                    courseNumber = toOldCourseNumber(courseNumber);
 
-                    firestoreDb.collection('scans').doc(course)
+                    firestoreDb.collection('scans').doc(courseNumber)
                         .set(update, { merge: true })
                         .then(function () {
                             //console.log("Document successfully updated!");
@@ -381,6 +382,24 @@
                 default:
                     return semester;
             }
+        }
+
+        function toOldCourseNumber(course) {
+            var match = /^970300(\d\d)$/.exec(course);
+            if (match) {
+                return '9730' + match[1];
+            }
+
+            if (/^097300\d\d$/.exec(course)) {
+                return course;
+            }
+
+            match = /^0(\d\d\d)0(\d\d\d)$/.exec(course);
+            if (match) {
+                return match[1] + match[2];
+            }
+
+            return course;
         }
     })();
 </script>
