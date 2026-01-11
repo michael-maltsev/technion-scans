@@ -13,7 +13,7 @@ with open('technion-scans.js', 'r') as f:
 
 # Replace content between markers.
 pattern = r'(\n\s*// technion-course-names_start\n\s*)[\s\S]*?(\n\s*// technion-course-names_end\n)'
-replacement = r'\1var dict = ' + course_names + r';\2'
+replacement = r'\1var dict = ' + course_names.replace('\\', '\\\\') + r';\2'
 new_content = re.sub(pattern, replacement, content)
 
 # Write back to file.
