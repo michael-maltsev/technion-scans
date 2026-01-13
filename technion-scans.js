@@ -1,6 +1,6 @@
 'use strict';
 
-/* global BootstrapDialog, yadcf, Q, firebase */
+/* global BootstrapDialog, Promise, yadcf, Q, firebase */
 
 var globalFunctions = {};
 
