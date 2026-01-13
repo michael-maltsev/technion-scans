@@ -5,7 +5,6 @@
 var globalFunctions = {};
 
 (function () {
-
     var courseNamesDictPromise = null;
 
     function fetchCourseNamesDict() {
@@ -28,8 +27,8 @@ var globalFunctions = {};
 
     var searchQuery = getParameterByName('search');
 
-    fetchCourseNamesDict().then(function (courseNamesDict) {
-        if (displayCourseNew) {
+    if (displayCourseNew) {
+        fetchCourseNamesDict().then(function (courseNamesDict) {
             var newTitle = displayCourseNew;
             var displayCourseName = courseNumberToName(displayCourseNew, courseNamesDict);
             if (displayCourseName) {
@@ -38,8 +37,8 @@ var globalFunctions = {};
             newTitle += ' - מאגר סריקות';
             $('#main-title').text(newTitle);
             document.title = newTitle;
-        }
-    });
+        });
+    }
 
     $('#upload-new-scan-link').click(function () {
         var url = 'https://script.google.com/macros/s/AKfycbwydtnNiY0Pi5_znthdlZVKy3YP9khMMdtG8nSg_ejzpOl7_S9Y/exec?action=upload_frame';
@@ -730,6 +729,7 @@ var globalFunctions = {};
             "97030080": "מבחן כניסה במתמטיקה",
             "97030081": "מבחן כניסה בעברית",
         };
-        return (courseNamesDict && courseNamesDict[course]) || dictExtra[course] || null;
+
+        return courseNamesDict[course] || dictExtra[course] || null;
     }
 })();
