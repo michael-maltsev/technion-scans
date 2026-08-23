@@ -447,13 +447,24 @@ var globalFunctions = {};
         }).virtualselect('load');
     }
 
+    // Hebrew, English and Greek (for scientific notation) letters only; digits,
+    // punctuation, symbols and emojis are always allowed.
+    // Not a literal: the unicode flag isn't parsed with the eslint ecmaVersion.
+    var foreignScriptRegex = new RegExp(
+        '[^\\p{Script=Hebrew}\\p{Script=Latin}\\p{Script=Greek}\\p{Script=Common}\\p{Script=Inherited}]', 'u');
+
+    function isCommentLanguageAllowed(comment) {
+        return !foreignScriptRegex.test(comment);
+    }
+
     function scanAddComment(element, scanId) {
         // https://stackoverflow.com/a/30730405
         var row = $('#scans-table').DataTable().row($(element).closest('tr'));
 
         BootstrapDialog.show({
             title: 'הוסף הערה',
-            message: '<input type="text" class="form-control" placeholder="הוסף הערה כאן...">',
+            message: '<input type="text" class="form-control" placeholder="הוסף הערה כאן...">'
+                + '<div class="invalid-feedback">ניתן לכתוב הערות בעברית או באנגלית בלבד</div>',
             onshown: function (dialog) {
                 dialog.getModalBody().find('input[type="text"]').focus();
             },
@@ -462,7 +473,16 @@ var globalFunctions = {};
                 cssClass: 'btn-primary',
                 hotkey: 13, // Enter.
                 action: function (dialog) {
-                    var text = dialog.getModalBody().find('input[type="text"]').val().trim().replace(/\s+/g, ' ');
+                    var input = dialog.getModalBody().find('input[type="text"]');
+                    var text = input.val().trim().replace(/\s+/g, ' ');
+
+                    var languageAllowed = isCommentLanguageAllowed(text);
+                    input.toggleClass('is-invalid', !languageAllowed);
+                    if (!languageAllowed) {
+                        input.focus();
+                        return;
+                    }
+
                     if (text) {
                         var update = {};
                         update['comments.' + scanId] = firebase.firestore.FieldValue.arrayUnion(text);

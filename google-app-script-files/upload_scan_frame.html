@@ -199,7 +199,12 @@
                     </div>
                     <div class="form-group col-sm-6">
                         <label for="detail-comments">הערות <span class="text-muted">(אופציונלי)</span></label>
-                        <input type="text" class="form-control" id="detail-comments" name="detail-comments">
+                        <!-- Hebrew, English and Greek (for scientific notation) letters only; digits,
+                             punctuation, symbols and emojis are always allowed. -->
+                        <input type="text" pattern="[\p{Script=Hebrew}\p{Script=Latin}\p{Script=Greek}\p{Script=Common}\p{Script=Inherited}]*" class="form-control" id="detail-comments" name="detail-comments">
+                        <div class="invalid-feedback">
+                            ניתן לכתוב הערות בעברית או באנגלית בלבד
+                        </div>
                     </div>
                 </div>
 
